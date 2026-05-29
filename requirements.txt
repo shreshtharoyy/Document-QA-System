@@ -1,0 +1,6 @@
+torch
+transformers
+pymupdf
+gradio
+nltk
+scikit-learn
