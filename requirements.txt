@@ -4,4 +4,3 @@ pymupdf
 gradio
 nltk
 scikit-learn
-sentence-transformers

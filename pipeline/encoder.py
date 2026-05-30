@@ -1,11 +1,8 @@
-from transformers import AutoTokenizer, AutoModel
+from sentence_transformers import SentenceTransformer
 
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
-model = AutoModel.from_pretrained("bert-base-uncased")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def encode_text(text):
-    inputs = tokenizer(text, return_tensors="pt")
-    outputs = model(**inputs)
-    cls_embedding = outputs.last_hidden_state[:, 0, :]
+    embedding = model.encode(text)
 
-    return cls_embedding
+    return embedding
