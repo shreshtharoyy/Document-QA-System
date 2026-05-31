@@ -3,58 +3,69 @@ from pipeline.encoder import encode_text
 from pipeline.retriever import retrieve_best_chunk
 from pipeline.generator import generate_answer
 
+def process_document(pdf_path):
+    pdf_text = load_text(pdf_path)
+    chunks = chunk_text(pdf_text)
 
-pdf_text = load_text("sample.pdf")
+    chunk_embeddings = []
 
-chunks = chunk_text(pdf_text)
+    for chunk in chunks:
+        chunk_embeddings.append(
+            encode_text(chunk)
+        )
 
-chunk_embeddings = []
+    return chunks, chunk_embeddings
 
-for chunk in chunks:
-    chunk_embeddings.append(
-        encode_text(chunk)
+def answer_question(question, chunks, chunk_embeddings):
+
+    question_embedding = encode_text(question)
+
+    best_index, scores = retrieve_best_chunk(
+        question_embedding,
+        chunk_embeddings
     )
 
-question = input("Ask a question: ")
+    best_score = max(scores)
 
-question_embedding = encode_text(question)
+    THRESHOLD = 0.50
 
-best_index, scores = retrieve_best_chunk(
-    question_embedding,
-    chunk_embeddings
-)
+    if best_score < THRESHOLD:
+        return "Answer not found in document."
 
-best_score = max(scores)
+    else:
+        best_chunk = chunks[best_index]
 
-print("\nScores:", scores)
-print("Best Score:", best_score)
+        prompt = f"""
+    You are a helpful question-answering assistant.
 
-THRESHOLD = 0.50
+    Answer the question ONLY using the provided context.
 
-if best_score < THRESHOLD:
-    print("\nAnswer not found in document.")
+    If the answer is not present in the context, say:
+    "I could not find the answer in the document."
 
-else:
-    best_chunk = chunks[best_index]
+    Context:
+    {best_chunk}
 
-    prompt = f"""
-You are a helpful question-answering assistant.
+    Question:
+    {question}
 
-Answer the question ONLY using the provided context.
+    Answer:
+    """
 
-If the answer is not present in the context, say:
-"I could not find the answer in the document."
+        answer = generate_answer(prompt)
+        return answer
+    
+if __name__ == "__main__":
 
-Context:
-{best_chunk}
+    chunks, chunk_embeddings = process_document("sample.pdf")
 
-Question:
-{question}
+    question = input("Ask a question: ")
 
-Answer:
-"""
+    answer = answer_question(
+        question,
+        chunks,
+        chunk_embeddings
+    )
 
-    answer = generate_answer(prompt)
-
-    print(f"\nRetrieved Chunk: {best_chunk}")
-    print(f"\nGenerated Answer: {answer}")
+    print("\nAnswer:")
+    print(answer)
