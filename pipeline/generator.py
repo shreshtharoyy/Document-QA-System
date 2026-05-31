@@ -1,16 +1,30 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoModelForQuestionAnswering, AutoTokenizer
+import torch
 
-tokenizer = AutoTokenizer.from_pretrained("HuggingFaceTB/SmolLM2-360M-Instruct")
-model = AutoModelForCausalLM.from_pretrained("HuggingFaceTB/SmolLM2-360M-Instruct")
+tokenizer = AutoTokenizer.from_pretrained("deepset/roberta-base-squad2")
+model = AutoModelForQuestionAnswering.from_pretrained("deepset/roberta-base-squad2")
 
-def generate_answer(prompt):
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(**inputs, max_new_tokens=15, do_sample=False, repetition_penalty=1.1)
+def generate_answer(context, question):
+    inputs = tokenizer(
+        question,
+        context,
+        return_tensors="pt",
+        truncation=True,
+        max_length=512
+    )
 
-    generated_tokens = outputs[0][inputs["input_ids"].shape[1]:]
+    with torch.no_grad():
+        outputs = model(**inputs)
 
-    answer = tokenizer.decode(generated_tokens, skip_special_tokens=True)
-    answer = answer.split("Answer:")[-1].strip()
+    start_index = torch.argmax(outputs.start_logits)
+    end_index = torch.argmax(outputs.end_logits) + 1
+
+    tokens = inputs["input_ids"][0][start_index:end_index]
+    answer = tokenizer.decode(tokens, skip_special_tokens=True)
+
+    # Confidence check
+    start_score = torch.max(outputs.start_logits).item()
+    if start_score < 2.0:
+        return "I could not find the answer in the document."
 
     return answer.strip()
-
