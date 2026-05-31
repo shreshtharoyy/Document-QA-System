@@ -1,9 +1,8 @@
-torch
-transformers
-sentence-transformers
-sentencepiece
-accelerate
 pymupdf
-gradio
-nltk
+sentence-transformers
+transformers
+torch
 scikit-learn
+fastapi
+uvicorn
+python-multipart
