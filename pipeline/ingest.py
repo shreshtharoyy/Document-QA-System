@@ -8,11 +8,17 @@ def load_text(pdf_path):
     doc.close()
     return text
 
-def chunk_text(text):
-    chunks = text.split("\n")
-    chunks = [chunk.strip() for chunk in chunks if chunk.strip()]
+def chunk_text(text, chunk_size=50, overlap=10):
+    words = text.split()
+    chunks = []
+    start = 0
+
+    while start < len(words):
+        end = start + chunk_size
+        chunk = " ".join(words[start:end])
+        chunks.append(chunk)
+        start += chunk_size - overlap  
+
     return chunks
 
-chunks = chunk_text(load_text("sample.pdf"))
-for i, chunk in enumerate(chunks, start=1):
-    print(f"Chunk {i} \n{chunk}\n")
+
