@@ -93,6 +93,39 @@ deepset/roberta-base-squad2
 
 Used to extract answers from the retrieved document context.
 
+
+---
+
+## Project Structure
+
+```text
+DocuMind-QA/
+│
+├── backend/
+│   └── app.py
+│
+├── frontend/
+│   └── app.py
+│
+├── pipeline/
+│   ├── encoder.py
+│   ├── generator.py
+│   ├── ingest.py
+│   └── retriever.py
+│
+├── sample_documents/
+│   └── test_document.pdf
+│
+├── demo/
+│   └── documind_demo.mp4
+│
+├── run_pipeline.py
+├── requirements.txt
+├── README.md
+└── .gitignore
+```
+
+
 ---
 
 ## Installation
@@ -100,7 +133,7 @@ Used to extract answers from the retrieved document context.
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/shreshtharoyy/DocuMind-QA.git
 cd DocuMind-QA
 ```
 
