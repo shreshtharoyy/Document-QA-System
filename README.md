@@ -95,27 +95,6 @@ Used to extract answers from the retrieved document context.
 
 ---
 
-## Project Structure
-
-```text
-DocuMind-QA/
-│
-├── app.py
-├── run_pipeline.py
-├── requirements.txt
-│
-├── frontend/
-│   └── app.py
-│
-├── pipeline/
-│   ├── ingest.py
-│   ├── encoder.py
-│   ├── retriever.py
-│   └── generator.py
-```
-
----
-
 ## Installation
 
 Clone the repository:
