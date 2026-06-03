@@ -1,6 +1,6 @@
-# DocuMind-QA
+# Document-QA-System
 
-DocuMind-QA is a PDF Question Answering system that enables users to upload documents and ask natural language questions about their content. The system retrieves the most relevant document chunks using semantic similarity and extracts answers from the retrieved context.
+Document-QA-System is a PDF Question Answering system that enables users to upload documents and ask natural language questions about their content. The system retrieves the most relevant document chunks using semantic similarity and extracts answers from the retrieved context.
 
 ## Features
 
